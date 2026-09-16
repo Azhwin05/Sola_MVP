@@ -64,7 +64,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const CREATE_MENU_ITEMS: { label: string; href: string; permission: string | null }[] = [
   { label: "New Lead", href: "/leads/new", permission: "leads.manage" },
   { label: "New Customer", href: "/customers/new", permission: "customers.manage" },
-  { label: "New Site Survey", href: "/surveys", permission: "surveys.manage" },
+  { label: "New Site Survey", href: "/surveys/new", permission: "surveys.manage" },
   { label: "New Proposal", href: "/proposals", permission: "proposals.manage" },
   { label: "New Project", href: "/projects", permission: "projects.manage" },
   { label: "New Purchase Order", href: "/procurement", permission: "procurement.manage" },

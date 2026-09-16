@@ -30,18 +30,37 @@ Schema is managed entirely through Supabase migrations (applied via the Supabase
 | `leads` | Pipeline record with its own contact/company fields (doesn't require a `customers` row to exist yet), optional `customer_id`/`site_id` links, `lead_number` auto-generated via `next_number('lead')`. |
 | `lead_activities` | CRM communication/history log (call/email/meeting/whatsapp/site_visit/stage_change/note) — distinct from `audit_logs`, which is the system-level change record. |
 
+## Tables (Phase 3)
+
+| Table | Purpose |
+|---|---|
+| `survey_photo_categories` | Org-editable photo categories for surveys, each optionally `is_mandatory`. |
+| `site_surveys` | One row per survey — site/measurements/electrical/shadow/notes fields, `survey_number` auto-generated via `next_number('survey')`, `status` workflow. |
+| `survey_photos` | Uploaded photo metadata (category, GPS, uploader) — the actual file lives in the `project-files` Storage bucket at `storage_path`. |
+| `eb_bills` | One row per customer per billing month (`unique(customer_id, billing_month)`) — units consumed, demand, tariff, amount, paid status. |
+| `engineering_studies` | One row per lead (`unique(organization_id, lead_id)`) — the container a lead's engineering work hangs off. |
+| `engineering_revisions` | Versioned capacity calculations: `inputs`/`outputs` jsonb, `revision_number` assigned server-side (never client-computed) to avoid a race between concurrent recalculations. |
+| `bom_headers` / `bom_items` | Versioned bill of materials generated from a specific `engineering_revisions` row. `bom_items.final_quantity` and `.estimated_amount` are Postgres **generated columns** (`quantity * (1 + wastage%) * rate`), not values the app computes and could drift from. |
+
+## Storage
+
+One private bucket, `project-files` (created via `insert into storage.buckets`, since no dedicated MCP tool provisions buckets — see migration `0016`). Path convention: `{organization_id}/...`. RLS on `storage.objects` mirrors the table-level pattern: `(storage.foldername(name))[1] = current_org_id()` plus a `has_permission()` check, so a photo/document is exactly as protected as the row that references it.
+
 ## Key functions
 
-- `bootstrap_organization(org_name, org_slug, full_name)` — first-run org + owner setup (also seeds default lead sources).
-- `seed_default_roles(org_id)` / `seed_default_lead_sources(org_id)` — internal helpers, not directly callable over the API.
+- `bootstrap_organization(org_name, org_slug, full_name)` — first-run org + owner setup (also seeds default lead sources and survey photo categories).
+- `seed_default_roles(org_id)` / `seed_default_lead_sources(org_id)` / `seed_default_survey_photo_categories(org_id)` — internal helpers, not directly callable over the API.
 - `create_invite(role_key, email?)` / `get_invite_preview(token)` / `accept_invite(token, full_name)` — invite lifecycle.
 - `convert_lead_to_customer(lead_id)` — atomically creates a `customers` row + primary `customer_contacts` row from a lead's contact info and links `leads.customer_id`, in one transaction.
+- `get_or_create_engineering_study(lead_id)` — idempotent: returns the existing study for a lead or creates one.
+- `create_engineering_revision(study_id, inputs, outputs)` — appends a new revision with a server-assigned `revision_number`.
+- `create_bom_from_revision(revision_id, items)` — creates a new `bom_headers` (server-assigned `version`) plus all its `bom_items` in one call.
 - `next_number(entity_type, format?)` — generates `PROP-2026-0001`-style numbers per the org's configured format.
 - `current_org_id()`, `has_permission(key)`, `is_org_owner()` — RLS helper functions, called from both policies and the client.
 
 ## Multi-tenancy & RLS
 
-RLS is enabled on every table above. Every policy scopes rows to `organization_id = current_org_id()`; management operations additionally require `is_org_owner()` or a specific `has_permission()` check. `anon` has no access to any table or to any RPC except `get_invite_preview` (needed so an unauthenticated invitee can preview an invite before signing up).
+RLS is enabled on every table above, and on `storage.objects` for the `project-files` bucket. Every policy scopes rows to `organization_id = current_org_id()`; management operations additionally require `is_org_owner()` or a specific `has_permission()` check. `anon` has no access to any table, any RPC except `get_invite_preview` (needed so an unauthenticated invitee can preview an invite before signing up), or any storage object.
 
 ## Regenerating TypeScript types
 

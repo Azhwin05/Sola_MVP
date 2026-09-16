@@ -68,6 +68,134 @@ export type Database = {
           },
         ]
       }
+      bom_headers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          organization_id: string
+          revision_id: string
+          status: string
+          study_id: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          organization_id?: string
+          revision_id: string
+          status?: string
+          study_id: string
+          version: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          organization_id?: string
+          revision_id?: string
+          status?: string
+          study_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bom_headers_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_headers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_headers_revision_id_fkey"
+            columns: ["revision_id"]
+            isOneToOne: false
+            referencedRelation: "engineering_revisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_headers_study_id_fkey"
+            columns: ["study_id"]
+            isOneToOne: false
+            referencedRelation: "engineering_studies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bom_items: {
+        Row: {
+          bom_header_id: string
+          category: string
+          created_at: string
+          estimated_amount: number | null
+          estimated_rate: number
+          final_quantity: number | null
+          id: string
+          item: string
+          organization_id: string
+          quantity: number
+          sort_order: number
+          specification: string | null
+          unit: string
+          wastage_percent: number
+        }
+        Insert: {
+          bom_header_id: string
+          category: string
+          created_at?: string
+          estimated_amount?: number | null
+          estimated_rate?: number
+          final_quantity?: number | null
+          id?: string
+          item: string
+          organization_id?: string
+          quantity?: number
+          sort_order?: number
+          specification?: string | null
+          unit?: string
+          wastage_percent?: number
+        }
+        Update: {
+          bom_header_id?: string
+          category?: string
+          created_at?: string
+          estimated_amount?: number | null
+          estimated_rate?: number
+          final_quantity?: number | null
+          id?: string
+          item?: string
+          organization_id?: string
+          quantity?: number
+          sort_order?: number
+          specification?: string | null
+          unit?: string
+          wastage_percent?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bom_items_bom_header_id_fkey"
+            columns: ["bom_header_id"]
+            isOneToOne: false
+            referencedRelation: "bom_headers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customer_contacts: {
         Row: {
           created_at: string
@@ -211,6 +339,225 @@ export type Database = {
           },
           {
             foreignKeyName: "customers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eb_bills: {
+        Row: {
+          amount: number | null
+          bill_number: string | null
+          billing_month: string
+          closing_reading: number | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          demand_kva: number | null
+          due_date: string | null
+          extraction_confidence: number | null
+          id: string
+          lead_id: string | null
+          opening_reading: number | null
+          organization_id: string
+          paid_status: string
+          source_document_path: string | null
+          survey_id: string | null
+          tariff_category: string | null
+          units_consumed: number
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          bill_number?: string | null
+          billing_month: string
+          closing_reading?: number | null
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          demand_kva?: number | null
+          due_date?: string | null
+          extraction_confidence?: number | null
+          id?: string
+          lead_id?: string | null
+          opening_reading?: number | null
+          organization_id?: string
+          paid_status?: string
+          source_document_path?: string | null
+          survey_id?: string | null
+          tariff_category?: string | null
+          units_consumed: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          bill_number?: string | null
+          billing_month?: string
+          closing_reading?: number | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          demand_kva?: number | null
+          due_date?: string | null
+          extraction_confidence?: number | null
+          id?: string
+          lead_id?: string | null
+          opening_reading?: number | null
+          organization_id?: string
+          paid_status?: string
+          source_document_path?: string | null
+          survey_id?: string | null
+          tariff_category?: string | null
+          units_consumed?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eb_bills_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eb_bills_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eb_bills_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eb_bills_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eb_bills_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "site_surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      engineering_revisions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          inputs: Json
+          organization_id: string
+          outputs: Json
+          revision_number: number
+          study_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          inputs: Json
+          organization_id?: string
+          outputs: Json
+          revision_number: number
+          study_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          inputs?: Json
+          organization_id?: string
+          outputs?: Json
+          revision_number?: number
+          study_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engineering_revisions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engineering_revisions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engineering_revisions_study_id_fkey"
+            columns: ["study_id"]
+            isOneToOne: false
+            referencedRelation: "engineering_studies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      engineering_studies: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          id: string
+          lead_id: string
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          id?: string
+          lead_id: string
+          organization_id?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          id?: string
+          lead_id?: string
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engineering_studies_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engineering_studies_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engineering_studies_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engineering_studies_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -692,6 +1039,295 @@ export type Database = {
           },
         ]
       }
+      site_surveys: {
+        Row: {
+          access_notes: string | null
+          cable_route: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          electrical_panel: string | null
+          engineer_id: string | null
+          gps_lat: number | null
+          gps_lng: number | null
+          id: string
+          inverter_location: string | null
+          lead_id: string
+          meter_type: string | null
+          observations: string | null
+          obstruction_notes: string | null
+          obstructions: Json
+          organization_id: string
+          orientation: string | null
+          recommendations: string | null
+          review_comment: string | null
+          review_status: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risks: string | null
+          roof_length: number | null
+          roof_type: string | null
+          roof_width: number | null
+          sanctioned_load: number | null
+          shadow_observations: string | null
+          site_id: string | null
+          status: string
+          submitted_at: string | null
+          submitted_by: string | null
+          survey_date: string
+          survey_number: string
+          tilt: number | null
+          transformer_details: string | null
+          updated_at: string
+          usable_area: number | null
+          working_hours: string | null
+        }
+        Insert: {
+          access_notes?: string | null
+          cable_route?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          electrical_panel?: string | null
+          engineer_id?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          inverter_location?: string | null
+          lead_id: string
+          meter_type?: string | null
+          observations?: string | null
+          obstruction_notes?: string | null
+          obstructions?: Json
+          organization_id?: string
+          orientation?: string | null
+          recommendations?: string | null
+          review_comment?: string | null
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risks?: string | null
+          roof_length?: number | null
+          roof_type?: string | null
+          roof_width?: number | null
+          sanctioned_load?: number | null
+          shadow_observations?: string | null
+          site_id?: string | null
+          status?: string
+          submitted_at?: string | null
+          submitted_by?: string | null
+          survey_date?: string
+          survey_number?: string
+          tilt?: number | null
+          transformer_details?: string | null
+          updated_at?: string
+          usable_area?: number | null
+          working_hours?: string | null
+        }
+        Update: {
+          access_notes?: string | null
+          cable_route?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          electrical_panel?: string | null
+          engineer_id?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          inverter_location?: string | null
+          lead_id?: string
+          meter_type?: string | null
+          observations?: string | null
+          obstruction_notes?: string | null
+          obstructions?: Json
+          organization_id?: string
+          orientation?: string | null
+          recommendations?: string | null
+          review_comment?: string | null
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risks?: string | null
+          roof_length?: number | null
+          roof_type?: string | null
+          roof_width?: number | null
+          sanctioned_load?: number | null
+          shadow_observations?: string | null
+          site_id?: string | null
+          status?: string
+          submitted_at?: string | null
+          submitted_by?: string | null
+          survey_date?: string
+          survey_number?: string
+          tilt?: number | null
+          transformer_details?: string | null
+          updated_at?: string
+          usable_area?: number | null
+          working_hours?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_surveys_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_surveys_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_surveys_engineer_id_fkey"
+            columns: ["engineer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_surveys_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_surveys_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_surveys_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_surveys_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "customer_sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_surveys_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_photo_categories: {
+        Row: {
+          created_at: string
+          id: string
+          is_mandatory: boolean
+          name: string
+          organization_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_mandatory?: boolean
+          name: string
+          organization_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_mandatory?: boolean
+          name?: string
+          organization_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_photo_categories_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_photos: {
+        Row: {
+          caption: string | null
+          category_id: string | null
+          gps_lat: number | null
+          gps_lng: number | null
+          id: string
+          organization_id: string
+          storage_path: string
+          survey_id: string
+          uploaded_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          caption?: string | null
+          category_id?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          organization_id?: string
+          storage_path: string
+          survey_id: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          caption?: string | null
+          category_id?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          organization_id?: string
+          storage_path?: string
+          survey_id?: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_photos_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "survey_photo_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_photos_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_photos_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "site_surveys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "survey_photos_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       system_settings: {
         Row: {
           notification_config: Json
@@ -784,6 +1420,44 @@ export type Database = {
         Returns: string
       }
       convert_lead_to_customer: { Args: { p_lead_id: string }; Returns: string }
+      create_bom_from_revision: {
+        Args: { p_items: Json; p_revision_id: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          id: string
+          organization_id: string
+          revision_id: string
+          status: string
+          study_id: string
+          version: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "bom_headers"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      create_engineering_revision: {
+        Args: { p_inputs: Json; p_outputs: Json; p_study_id: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          id: string
+          inputs: Json
+          organization_id: string
+          outputs: Json
+          revision_number: number
+          study_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "engineering_revisions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       create_invite: {
         Args: { p_email?: string; p_role_key: string }
         Returns: {
@@ -798,6 +1472,12 @@ export type Database = {
           role_id: string
           token: string
         }
+        SetofOptions: {
+          from: "*"
+          to: "organization_invites"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       current_org_id: { Args: never; Returns: string }
       get_invite_preview: {
@@ -807,6 +1487,24 @@ export type Database = {
           role_name: string
           valid: boolean
         }[]
+      }
+      get_or_create_engineering_study: {
+        Args: { p_lead_id: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          id: string
+          lead_id: string
+          organization_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "engineering_studies"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       has_permission: { Args: { perm_key: string }; Returns: boolean }
       is_org_owner: { Args: never; Returns: boolean }
@@ -819,6 +1517,10 @@ export type Database = {
         Returns: undefined
       }
       seed_default_roles: { Args: { p_org_id: string }; Returns: undefined }
+      seed_default_survey_photo_categories: {
+        Args: { p_org_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

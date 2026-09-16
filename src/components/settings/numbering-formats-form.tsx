@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const ENTITY_LABELS: Record<string, string> = {
   lead: "Lead",
+  survey: "Site Survey",
   project: "Project",
   proposal: "Proposal",
   purchase_order: "Purchase Order",

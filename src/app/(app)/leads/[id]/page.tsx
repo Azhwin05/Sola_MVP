@@ -8,6 +8,8 @@ import { LeadOverview } from "@/components/leads/lead-overview";
 import { LeadActivityTab } from "@/components/leads/lead-activity-tab";
 import { LeadSiteTab } from "@/components/leads/lead-site-tab";
 import { LeadNotesTab } from "@/components/leads/lead-notes-tab";
+import { LeadSurveyTab } from "@/components/leads/lead-survey-tab";
+import { LeadEngineeringTab } from "@/components/leads/lead-engineering-tab";
 
 export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -44,6 +46,8 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="activity">Activity {activities && activities.length > 0 ? `(${activities.length})` : ""}</TabsTrigger>
           <TabsTrigger value="site">Site</TabsTrigger>
+          <TabsTrigger value="survey">Survey</TabsTrigger>
+          <TabsTrigger value="engineering">Engineering</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
           <TabsTrigger value="communication">Communication</TabsTrigger>
           <TabsTrigger value="proposal">Proposal</TabsTrigger>
@@ -60,6 +64,14 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
 
         <TabsContent value="site" className="pt-6">
           <LeadSiteTab lead={lead} sites={sites ?? []} canManage={canManage} />
+        </TabsContent>
+
+        <TabsContent value="survey" className="pt-6">
+          <LeadSurveyTab leadId={lead.id} hasCustomer={!!lead.customer_id} canManage={canManage} />
+        </TabsContent>
+
+        <TabsContent value="engineering" className="pt-6">
+          <LeadEngineeringTab leadId={lead.id} canManage={canManage} />
         </TabsContent>
 
         <TabsContent value="notes" className="pt-6">

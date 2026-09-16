@@ -1,6 +1,6 @@
 # Architecture
 
-Solar Business OS — Phase 2 (Core Sales) in progress, Phase 1 (Foundation) complete.
+Solar Business OS — Phase 3 (Survey + Engineering) in progress, Phases 1-2 complete.
 
 ## Stack
 
@@ -32,9 +32,9 @@ All three are `SECURITY DEFINER` (to read `profiles`/`roles` without recursive R
 
 ## What's built vs. scaffolded
 
-Built end-to-end (real data, real RLS, real auth): organization bootstrap, invites, team directory, role overview, organization profile settings, numbering-format settings, audit log, **Leads & CRM**, **Customers**.
+Built end-to-end (real data, real RLS, real auth): organization bootstrap, invites, team directory, role overview, organization profile settings, numbering-format settings, audit log, **Leads & CRM**, **Customers**, **Site Surveys**, **EB Bill Intelligence**, **Engineering (capacity + BOM)**.
 
-Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake data): Surveys, Engineering, Proposals, Projects, Procurement, Inventory, Finance, Installation, QA/QC, Commissioning, Monitoring, O&M, Customer Portal, Documents, Communications, Reports, Vendors.
+Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake data): Proposals, Projects, Procurement, Inventory, Finance, Installation, QA/QC, Commissioning, Monitoring, O&M, Customer Portal, Documents, Communications, Reports, Vendors.
 
 ## Leads & Customers (Phase 2)
 
@@ -44,6 +44,14 @@ Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake da
 - **Lead scoring**: `src/lib/leads/scoring.ts` is a deterministic, explainable 0–100 score (deal value, system size, project type, timeline urgency, data completeness) — every point traces to a real field and is shown to the user as a breakdown, never as a bare AI-flavored number, per the product spec's "explain factors, don't claim certainty" rule.
 - **Kanban + list views**: `/leads` toggles between a stage-column board (quick stage-move dropdown per card) and a filterable/searchable table; both operate on the same client-fetched dataset (no server-side pagination yet — fine at current data volumes, worth revisiting if lead counts grow into the thousands).
 
+## Survey + Engineering (Phase 3)
+
+- **Site Surveys**: `site_surveys` is a wide, mostly-flat table (site/measurements/electrical/shadow/notes sections as columns, `obstructions` as jsonb) rather than one child table per section — it's strictly 1:1 per survey, so normalizing further would just be extra joins with no real benefit. A survey always starts from a lead that's already linked to a customer (so a `site_id` — a `customer_sites` row — can be required); `/surveys/new` only lists leads with `customer_id` set, with the lead detail page pointing users to "Convert to Customer" first. Lifecycle: `draft → scheduled → assigned → in_progress → submitted → reviewed → approved | rework`, enforced only in the UI (see `survey-status-bar.tsx`) — the underlying `status` check constraint allows any listed value, so a future pass could push the transition rules into a Postgres function if stricter server-side enforcement is needed.
+- **Photos**: real uploads to a private Supabase Storage bucket (`project-files`), not a stub. Path convention `{organization_id}/leads/{leadId}/surveys/{surveyId}/photos/...`; `storage.objects` RLS policies check `(storage.foldername(name))[1] = current_org_id()` plus `has_permission('surveys.*')`, mirroring the table-level policies. Categories (`survey_photo_categories`) are org-editable and each can be flagged mandatory; the UI shows which mandatory categories are still missing rather than blocking submission outright.
+- **EB Bill Intelligence**: `eb_bills` is one row per customer per billing month (unique constraint), entered manually. No OCR/extraction provider is wired up — `extraction_confidence` and `source_document_path` exist in the schema for when one is, but today the dialog says so explicitly rather than faking a confidence score.
+- **Engineering**: one `engineering_studies` row per lead (`unique(organization_id, lead_id)`), with versioned `engineering_revisions` (jsonb `inputs`/`outputs`, monotonically increasing `revision_number` assigned server-side by `create_engineering_revision()` — never computed client-side, to avoid a race between two people recalculating at once). The capacity math itself is a pure, unit-tested TypeScript function (`src/lib/engineering/capacity.ts` / `capacity.test.ts`) — deterministic, no model or AI involved, and every assumption it used is returned in an `assumptions: string[]` array that the UI renders verbatim rather than hiding.
+- **BOM**: `generateDefaultBom()` (`src/lib/engineering/bom.ts`) turns a capacity result into a starting bill of materials — panel/inverter counts are exact, but cabling and connector quantities are heuristic (documented as "auto-estimated" in each item's specification) since there's no layout/takeoff tool yet. Rates default to ₹0: no vendor pricing is assumed. `bom_items.final_quantity` and `.estimated_amount` are Postgres generated columns (`quantity * (1 + wastage%) * rate`), so the arithmetic can't drift from what's displayed. `create_bom_from_revision()` assigns the next `version` server-side, same race-avoidance reasoning as revisions.
+
 ## Phased build plan
 
-See `src/components/shared/phase-roadmap.tsx` for the same list rendered in-app on the Control Tower. Phase 2 (Core Sales) is in progress; each subsequent phase adds one or more of the remaining modules with its own migrations, RLS policies and UI.
+See `src/components/shared/phase-roadmap.tsx` for the same list rendered in-app on the Control Tower. Phase 3 (Survey + Engineering) is in progress; each subsequent phase adds one or more of the remaining modules with its own migrations, RLS policies and UI.

@@ -1,6 +1,6 @@
 # Architecture
 
-Solar Business OS — Phase 4 (Proposal + Project) in progress, Phases 1-3 complete.
+Solar Business OS — Phases 1-4 complete (Foundation, Core Sales, Survey + Engineering, Proposal + Project).
 
 ## Stack
 
@@ -65,4 +65,8 @@ Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake da
 
 ## Phased build plan
 
-See `src/components/shared/phase-roadmap.tsx` for the same list rendered in-app on the Control Tower. Phase 4 (Proposal + Project) is in progress; each subsequent phase adds one or more of the remaining modules with its own migrations, RLS policies and UI.
+See `src/components/shared/phase-roadmap.tsx` for the same list rendered in-app on the Control Tower. Phase 4 (Proposal + Project) is complete; each subsequent phase adds one or more of the remaining modules with its own migrations, RLS policies and UI.
+
+## Seed data
+
+The live organization "Clickfieldai" (`organization_id` `6fc54195-6b90-4ad6-a184-8548103f0a0c`, owner profile `596d76fb-69e9-464a-888c-8156820d5069`) is seeded with realistic demo data covering Phases 1-4: 12 customers, 12 contacts, 12 sites, 18 leads across every pipeline stage, 24 lead activities, 6 site surveys, 72 EB bills (6 customers × 12 months, seasonal variation), 6 engineering studies/revisions/BOMs, 6 proposal versions (2 draft, 2 sent, 2 accepted), and 3 projects (operational/installation/planning, with milestones, tasks, risks and events matching each stage). This is real data in the user's real org, not a separate demo tenant — Supabase doesn't allow fabricating `auth.users` rows, so seeding into an isolated sandbox org would leave nobody able to log into it. The generator script lived in the session scratchpad (not committed); the resulting `INSERT` statements were reviewed and applied via the Supabase MCP `execute_sql` tool inside per-entity transactions, using `select set_config('request.jwt.claim.sub', <owner-uuid>, true)` at the top of each transaction so `next_number()` and other RLS-gated defaults see a valid `auth.uid()` (raw SQL via MCP runs as the Postgres superuser with no real session otherwise).

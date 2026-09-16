@@ -57,7 +57,14 @@ export function LeadsView({
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <SearchInput value={query} onChange={setQuery} placeholder="Search leads…" className="w-56" />
 
-        <Select value={stageFilter} onValueChange={(v) => v && setStageFilter(v as LeadStage | "all")}>
+        <Select
+          items={[
+            { value: "all", label: "All stages" },
+            ...LEAD_STAGES.map((s) => ({ value: s, label: LEAD_STAGE_LABELS[s] })),
+          ]}
+          value={stageFilter}
+          onValueChange={(v) => v && setStageFilter(v as LeadStage | "all")}
+        >
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Stage" />
           </SelectTrigger>
@@ -71,7 +78,14 @@ export function LeadsView({
           </SelectContent>
         </Select>
 
-        <Select value={priorityFilter} onValueChange={(v) => v && setPriorityFilter(v as LeadPriority | "all")}>
+        <Select
+          items={[
+            { value: "all", label: "All priorities" },
+            ...LEAD_PRIORITIES.map((p) => ({ value: p, label: LEAD_PRIORITY_LABELS[p] })),
+          ]}
+          value={priorityFilter}
+          onValueChange={(v) => v && setPriorityFilter(v as LeadPriority | "all")}
+        >
           <SelectTrigger className="w-36">
             <SelectValue placeholder="Priority" />
           </SelectTrigger>
@@ -85,7 +99,14 @@ export function LeadsView({
           </SelectContent>
         </Select>
 
-        <Select value={ownerFilter} onValueChange={(v) => v && setOwnerFilter(v)}>
+        <Select
+          items={[
+            { value: "all", label: "All owners" },
+            ...profiles.map((p) => ({ value: p.id, label: p.full_name })),
+          ]}
+          value={ownerFilter}
+          onValueChange={(v) => v && setOwnerFilter(v)}
+        >
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Owner" />
           </SelectTrigger>

@@ -1,9 +1,19 @@
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
+import {
+  AlertCircle,
+  UsersRound,
+  ClipboardList,
+  TrendingUp,
+  FolderKanban,
+  Clock,
+  ShieldCheck,
+  ChevronRight,
+} from "lucide-react";
 import { getSessionContext } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { StatCard } from "@/components/shared/stat-card";
 import { EmptyState } from "@/components/shared/empty-state";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { PhaseRoadmap } from "@/components/shared/phase-roadmap";
 import { ProjectHealthSummary } from "@/components/control-tower/project-health-summary";
 import { calculateProjectHealth } from "@/lib/projects/health";
@@ -16,6 +26,10 @@ function greeting() {
   if (hour < 12) return "Good morning";
   if (hour < 17) return "Good afternoon";
   return "Good evening";
+}
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className="mb-3 text-[13px] font-semibold tracking-tight text-foreground">{children}</h2>;
 }
 
 export default async function ControlTowerPage() {
@@ -69,6 +83,8 @@ export default async function ControlTowerPage() {
     .filter((h) => h.health === "blocked" || h.health === "delayed")
     .slice(0, 5);
 
+  const attentionCount = overdueLeads.length + healthCounts.delayed + healthCounts.blocked;
+
   const todayLabel = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
     day: "numeric",
@@ -81,83 +97,97 @@ export default async function ControlTowerPage() {
   return (
     <div>
       <div className="pb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-[26px] leading-tight font-semibold tracking-tight text-foreground">
           {greeting()}, {firstName}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">{todayLabel}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 pb-8 sm:grid-cols-3 lg:grid-cols-6">
-        <StatCard label="Team Members" value={teamCount ?? 0} href="/team" />
-        <StatCard label="Open Leads" value={openLeads?.length ?? 0} href="/leads" />
+        <StatCard label="Team Members" value={teamCount ?? 0} href="/team" icon={UsersRound} />
+        <StatCard label="Open Leads" value={openLeads?.length ?? 0} href="/leads" icon={ClipboardList} />
         <StatCard
           label="Pipeline Value"
           value={pipelineValue > 0 ? `₹${(pipelineValue / 100000).toFixed(1)}L` : "₹0"}
           href="/leads"
+          icon={TrendingUp}
+          tone="brand"
         />
-        <StatCard label="Active Projects" value={activeProjects.length} href="/projects" />
+        <StatCard label="Active Projects" value={activeProjects.length} href="/projects" icon={FolderKanban} />
         <StatCard
           label="Overdue Actions"
-          value={overdueLeads.length + healthCounts.delayed + healthCounts.blocked}
+          value={attentionCount}
           href="/leads"
-          tone={overdueLeads.length + healthCounts.delayed + healthCounts.blocked > 0 ? "destructive" : "neutral"}
+          icon={Clock}
+          tone={attentionCount > 0 ? "destructive" : "success"}
         />
-        <StatCard label="Roles Configured" value={roleCount ?? 0} href="/settings" />
+        <StatCard label="Roles Configured" value={roleCount ?? 0} href="/settings" icon={ShieldCheck} />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 pb-8 lg:grid-cols-2">
-        <section>
-          <h2 className="mb-3 text-sm font-semibold text-foreground">Project Health</h2>
-          <ProjectHealthSummary counts={healthCounts} />
+      <div className="grid grid-cols-1 gap-5 pb-8 lg:grid-cols-5">
+        <section className="lg:col-span-3">
+          <SectionHeading>Attention Queue</SectionHeading>
+          {overdueLeads.length === 0 && projectAttention.length === 0 ? (
+            <EmptyState
+              icon={AlertCircle}
+              title="Nothing needs attention"
+              description="Overdue lead follow-ups and at-risk projects will surface here automatically."
+            />
+          ) : (
+            <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+              {projectAttention.map(({ project, health, reasons }) => (
+                <li key={project.id}>
+                  <Link
+                    href={`/projects/${project.id}`}
+                    className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent"
+                  >
+                    <span
+                      className={`mt-0.5 h-8 w-[3px] shrink-0 rounded-full ${health === "blocked" ? "bg-destructive" : "bg-warning"}`}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {project.project_number} · {project.customer?.name}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">{reasons[0]}</p>
+                    </div>
+                    <StatusBadge status={health === "blocked" ? "Blocked" : "Delayed"} />
+                    <ChevronRight className="h-4 w-4 shrink-0 text-subtle transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </li>
+              ))}
+              {overdueLeads.slice(0, 5).map((lead) => (
+                <li key={lead.id}>
+                  <Link
+                    href={`/leads/${lead.id}`}
+                    className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent"
+                  >
+                    <span className="mt-0.5 h-8 w-[3px] shrink-0 rounded-full bg-destructive/60" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {lead.company_name || lead.contact_name}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">{lead.next_action}</p>
+                    </div>
+                    <span className="shrink-0 text-xs font-medium text-destructive">
+                      Due {new Date(lead.next_action_date!).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-subtle transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
-        <section>
-          <h2 className="mb-3 text-sm font-semibold text-foreground">Build Roadmap</h2>
-          <PhaseRoadmap />
+
+        <section className="lg:col-span-2">
+          <SectionHeading>Project Health</SectionHeading>
+          <ProjectHealthSummary counts={healthCounts} />
         </section>
       </div>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold text-foreground">Attention Queue</h2>
-        {overdueLeads.length === 0 && projectAttention.length === 0 ? (
-          <EmptyState
-            icon={AlertCircle}
-            title="Nothing needs attention"
-            description="Overdue lead follow-ups and at-risk projects will surface here automatically."
-          />
-        ) : (
-          <ul className="divide-y divide-border rounded-lg border border-border">
-            {projectAttention.map(({ project, health, reasons }) => (
-              <li key={project.id}>
-                <Link href={`/projects/${project.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-accent">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {project.project_number} · {project.customer?.name}
-                    </p>
-                    <p className="truncate text-xs text-muted-foreground">{reasons[0]}</p>
-                  </div>
-                  <span className={`shrink-0 text-xs font-medium ${health === "blocked" ? "text-destructive" : "text-warning"}`}>
-                    {health === "blocked" ? "Blocked" : "Delayed"}
-                  </span>
-                </Link>
-              </li>
-            ))}
-            {overdueLeads.slice(0, 5).map((lead) => (
-              <li key={lead.id}>
-                <Link href={`/leads/${lead.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-accent">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {lead.company_name || lead.contact_name}
-                    </p>
-                    <p className="truncate text-xs text-muted-foreground">{lead.next_action}</p>
-                  </div>
-                  <span className="shrink-0 text-xs font-medium text-destructive">
-                    Due {new Date(lead.next_action_date!).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+        <SectionHeading>Build Roadmap</SectionHeading>
+        <PhaseRoadmap />
       </section>
     </div>
   );

@@ -4,7 +4,13 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { LEAD_STAGES, LEAD_STAGE_LABELS, type LeadStage } from "@/lib/leads/constants";
+import {
+  LEAD_STAGES,
+  LEAD_STAGE_LABELS,
+  LEAD_PRIORITY_LABELS,
+  type LeadStage,
+  type LeadPriority,
+} from "@/lib/leads/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { LeadRow } from "@/components/leads/types";
 import { cn } from "@/lib/utils";
@@ -47,8 +53,8 @@ export function LeadsKanban({ leads, canManage }: { leads: LeadRow[]; canManage:
                   <p className="text-sm font-medium text-foreground">{lead.contact_name}</p>
                   <p className="truncate text-xs text-muted-foreground">{lead.company_name || lead.lead_number}</p>
                   <div className="mt-1.5 flex items-center justify-between gap-1">
-                    <Badge variant={lead.priority === "high" ? "destructive" : "secondary"} className="text-[10px]">
-                      {lead.priority}
+                    <Badge variant={lead.priority === "high" ? "destructive" : "secondary"} className="text-[10px] capitalize">
+                      {LEAD_PRIORITY_LABELS[lead.priority as LeadPriority] ?? lead.priority}
                     </Badge>
                     {lead.estimated_value && (
                       <span className="text-xs tabular-nums text-muted-foreground">
@@ -58,7 +64,11 @@ export function LeadsKanban({ leads, canManage }: { leads: LeadRow[]; canManage:
                   </div>
                   {canManage && (
                     <div onClick={(e) => e.stopPropagation()} className="mt-2">
-                      <Select value={lead.stage} onValueChange={(v) => v && moveStage(lead.id, v as LeadStage)}>
+                      <Select
+                        items={LEAD_STAGES.map((s) => ({ value: s, label: LEAD_STAGE_LABELS[s] }))}
+                        value={lead.stage}
+                        onValueChange={(v) => v && moveStage(lead.id, v as LeadStage)}
+                      >
                         <SelectTrigger size="sm" className={cn("w-full text-xs")}>
                           <SelectValue />
                         </SelectTrigger>

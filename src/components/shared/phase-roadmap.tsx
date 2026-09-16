@@ -16,30 +16,32 @@ const PHASES = [
 
 export function PhaseRoadmap() {
   return (
-    <ol className="space-y-1.5 rounded-lg border border-border bg-card p-2">
+    <ol className="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border shadow-xs sm:grid-cols-2 lg:grid-cols-5">
       {PHASES.map((phase, i) => (
-        <li key={phase.name} className="flex items-start gap-3 rounded-md px-2 py-1.5">
-          <span
-            className={cn(
-              "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-medium",
-              phase.status === "done" && "border-success bg-success/10 text-success",
-              phase.status === "in_progress" && "border-info bg-info/10 text-info",
-              phase.status === "pending" && "border-border text-muted-foreground",
+        <li key={phase.name} className="flex flex-col gap-2 bg-card p-3.5">
+          <div className="flex items-center gap-2">
+            <span
+              className={cn(
+                "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold",
+                phase.status === "done" && "border-success bg-success text-success-foreground",
+                phase.status === "in_progress" && "border-primary bg-primary-light text-primary",
+                phase.status === "pending" && "border-border-strong text-subtle",
+              )}
+            >
+              {phase.status === "done" ? <Check className="h-3 w-3" strokeWidth={3} /> : i + 1}
+            </span>
+            {phase.status === "in_progress" && (
+              <span className="rounded-md bg-primary-light px-1.5 py-0.5 text-[10px] font-semibold text-primary-dark dark:text-primary">
+                In progress
+              </span>
             )}
-          >
-            {phase.status === "done" ? <Check className="h-3 w-3" /> : i + 1}
-          </span>
+            {phase.status === "done" && (
+              <span className="text-[10px] font-semibold tracking-wide text-success uppercase">Done</span>
+            )}
+          </div>
           <div className="min-w-0">
-            <p className="text-sm font-medium text-foreground">
-              {phase.name}
-              {phase.status === "in_progress" && (
-                <span className="ml-2 text-xs font-normal text-info">In progress</span>
-              )}
-              {phase.status === "done" && (
-                <span className="ml-2 text-xs font-normal text-success">Done</span>
-              )}
-            </p>
-            <p className="truncate text-xs text-muted-foreground">{phase.detail}</p>
+            <p className="text-[13px] leading-snug font-medium text-foreground">{phase.name}</p>
+            <p className="mt-0.5 text-[11px] leading-snug text-subtle">{phase.detail}</p>
           </div>
         </li>
       ))}

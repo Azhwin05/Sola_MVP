@@ -49,15 +49,15 @@ export function Topbar({
   }
 
   return (
-    <header className="flex h-14 items-center justify-between gap-3 border-b border-border bg-background px-4">
+    <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-border bg-background px-6">
       <button
         onClick={onOpenSearch}
-        className="flex w-72 items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted"
+        className="flex w-80 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-subtle shadow-xs transition-colors hover:border-border-strong hover:text-muted-foreground"
         aria-label="Open global search"
       >
-        <Search className="h-3.5 w-3.5" />
+        <Search className="h-4 w-4" />
         <span>Search…</span>
-        <kbd className="ml-auto rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium">
+        <kbd className="ml-auto rounded border border-border bg-muted px-1.5 py-0.5 font-sans text-[10px] font-medium text-subtle">
           Ctrl K
         </kbd>
       </button>
@@ -103,9 +103,11 @@ export function Topbar({
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <button className="ml-1 flex items-center gap-2 rounded-md p-1 hover:bg-accent" aria-label="Account menu">
+              <button className="ml-1 flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-accent" aria-label="Account menu">
                 <Avatar className="h-7 w-7">
-                  <AvatarFallback className="text-xs">{initials(fullName) || "?"}</AvatarFallback>
+                  <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
+                    {initials(fullName) || "?"}
+                  </AvatarFallback>
                 </Avatar>
               </button>
             }

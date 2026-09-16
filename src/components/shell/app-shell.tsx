@@ -30,7 +30,9 @@ export function AppShell({
           permissions={permissions}
           onOpenSearch={() => setSearchOpen(true)}
         />
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="scrollbar-subtle flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-[1600px] px-6 py-7">{children}</div>
+        </main>
       </div>
       <CommandPalette permissions={permissions} open={searchOpen} onOpenChange={setSearchOpen} />
     </div>

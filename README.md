@@ -19,4 +19,4 @@ Environment variables are documented in [`.env.example`](.env.example); `.env.lo
 
 ## Project status
 
-This is Phase 1 (Foundation) of a 10-phase build — see the roadmap on the Control Tower page, or [`docs/architecture.md`](docs/architecture.md#phased-build-plan). Auth, organizations, RBAC, the app shell/navigation, team invites, settings and the audit log are built end-to-end. The remaining 19 business modules are routed but intentionally show a "coming in Phase N" placeholder rather than fake data.
+This is Phase 2 (Core Sales) of a 10-phase build — see the roadmap on the Control Tower page, or [`docs/architecture.md`](docs/architecture.md#phased-build-plan). Phase 1 (auth, organizations, RBAC, app shell/navigation, team invites, settings, audit log) is done. Phase 2 adds **Leads & CRM** (pipeline board + list, lead scoring, activity timeline, convert-to-customer) and **Customers** (profile, contacts, sites) end-to-end. The remaining 17 business modules are routed but intentionally show a "coming in Phase N" placeholder rather than fake data.

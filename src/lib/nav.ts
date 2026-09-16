@@ -58,12 +58,12 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Audit Log", href: "/audit-log", icon: History, permission: "audit_log.view" },
 ];
 
-// Phase 1 note: these route to the module's landing page rather than a
-// dedicated /new form. Point them at real creation forms as each module
-// is built (Phase 2+) rather than a route that doesn't exist yet.
+// Items route to a dedicated /new form once that module is built (Phase 2+);
+// until then they route to the module's landing page rather than a URL that
+// doesn't exist yet.
 export const CREATE_MENU_ITEMS: { label: string; href: string; permission: string | null }[] = [
-  { label: "New Lead", href: "/leads", permission: "leads.manage" },
-  { label: "New Customer", href: "/customers", permission: "customers.manage" },
+  { label: "New Lead", href: "/leads/new", permission: "leads.manage" },
+  { label: "New Customer", href: "/customers/new", permission: "customers.manage" },
   { label: "New Site Survey", href: "/surveys", permission: "surveys.manage" },
   { label: "New Proposal", href: "/proposals", permission: "proposals.manage" },
   { label: "New Project", href: "/projects", permission: "projects.manage" },

@@ -22,7 +22,20 @@ export function toneForStatus(status: string): StatusTone {
   if (["blocked", "delayed", "overdue", "failed", "rejected", "cancelled", "critical", "lost"].includes(s)) {
     return "destructive";
   }
-  if (["negotiation", "qualified", "sent", "survey", "engineering", "installation", "commissioning"].includes(s)) {
+  if (
+    [
+      "negotiation",
+      "qualified",
+      "sent",
+      "proposal_sent",
+      "site_survey",
+      "survey",
+      "engineering",
+      "installation",
+      "commissioning",
+      "contacted",
+    ].includes(s)
+  ) {
     return "info";
   }
   return "neutral";

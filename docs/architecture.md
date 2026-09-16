@@ -1,6 +1,6 @@
 # Architecture
 
-Solar Business OS — Phase 1 (Foundation).
+Solar Business OS — Phase 2 (Core Sales) in progress, Phase 1 (Foundation) complete.
 
 ## Stack
 
@@ -32,10 +32,18 @@ All three are `SECURITY DEFINER` (to read `profiles`/`roles` without recursive R
 
 ## What's built vs. scaffolded
 
-Built end-to-end (real data, real RLS, real auth): organization bootstrap, invites, team directory, role overview, organization profile settings, numbering-format settings, audit log.
+Built end-to-end (real data, real RLS, real auth): organization bootstrap, invites, team directory, role overview, organization profile settings, numbering-format settings, audit log, **Leads & CRM**, **Customers**.
 
-Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake data): Leads, Customers, Surveys, Engineering, Proposals, Projects, Procurement, Inventory, Finance, Installation, QA/QC, Commissioning, Monitoring, O&M, Customer Portal, Documents, Communications, Reports, Vendors.
+Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake data): Surveys, Engineering, Proposals, Projects, Procurement, Inventory, Finance, Installation, QA/QC, Commissioning, Monitoring, O&M, Customer Portal, Documents, Communications, Reports, Vendors.
+
+## Leads & Customers (Phase 2)
+
+- **Data model**: `leads` (own contact/company fields, so a lead can exist before any formal customer record), optionally linked to `customers` via `customer_id`. `customers` own `customer_contacts` (multiple contacts, one marked primary) and `customer_sites` (site addresses, reused by future Survey/Project modules). `lead_sources` is an org-editable lookup table, seeded with 8 defaults on org bootstrap. `lead_activities` is an append-style CRM log (calls/emails/meetings/notes/stage changes), distinct from `audit_logs` (system-level record of who-changed-what).
+- **Numbering**: `leads.lead_number` defaults to `next_number('lead')` — generated automatically on insert, no client-side call needed.
+- **Convert to Customer**: `convert_lead_to_customer(lead_id)` RPC does the customer + primary-contact creation and the `leads.customer_id` link atomically in one transaction, rather than as sequential client-side inserts, so a partial failure can't leave an orphaned customer record.
+- **Lead scoring**: `src/lib/leads/scoring.ts` is a deterministic, explainable 0–100 score (deal value, system size, project type, timeline urgency, data completeness) — every point traces to a real field and is shown to the user as a breakdown, never as a bare AI-flavored number, per the product spec's "explain factors, don't claim certainty" rule.
+- **Kanban + list views**: `/leads` toggles between a stage-column board (quick stage-move dropdown per card) and a filterable/searchable table; both operate on the same client-fetched dataset (no server-side pagination yet — fine at current data volumes, worth revisiting if lead counts grow into the thousands).
 
 ## Phased build plan
 
-See `src/components/shared/phase-roadmap.tsx` for the same list rendered in-app on the Control Tower. Phase 1 (Foundation) is in progress; each subsequent phase adds one or more of the modules above with its own migrations, RLS policies and UI.
+See `src/components/shared/phase-roadmap.tsx` for the same list rendered in-app on the Control Tower. Phase 2 (Core Sales) is in progress; each subsequent phase adds one or more of the remaining modules with its own migrations, RLS policies and UI.

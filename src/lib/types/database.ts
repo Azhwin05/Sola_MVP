@@ -68,6 +68,364 @@ export type Database = {
           },
         ]
       }
+      customer_contacts: {
+        Row: {
+          created_at: string
+          customer_id: string
+          designation: string | null
+          email: string | null
+          id: string
+          is_primary: boolean
+          name: string
+          organization_id: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          designation?: string | null
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name: string
+          organization_id?: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          designation?: string | null
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name?: string
+          organization_id?: string
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_contacts_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_contacts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_sites: {
+        Row: {
+          address: Json
+          created_at: string
+          customer_id: string
+          id: string
+          label: string
+          organization_id: string
+          site_type: string | null
+        }
+        Insert: {
+          address?: Json
+          created_at?: string
+          customer_id: string
+          id?: string
+          label: string
+          organization_id?: string
+          site_type?: string | null
+        }
+        Update: {
+          address?: Json
+          created_at?: string
+          customer_id?: string
+          id?: string
+          label?: string
+          organization_id?: string
+          site_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_sites_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_sites_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          billing_address: Json
+          created_at: string
+          created_by: string | null
+          customer_type: string
+          gstin: string | null
+          id: string
+          name: string
+          notes: string | null
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          billing_address?: Json
+          created_at?: string
+          created_by?: string | null
+          customer_type?: string
+          gstin?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          organization_id?: string
+          updated_at?: string
+        }
+        Update: {
+          billing_address?: Json
+          created_at?: string
+          created_by?: string | null
+          customer_type?: string
+          gstin?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customers_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_activities: {
+        Row: {
+          activity_type: string
+          actor_id: string | null
+          created_at: string
+          description: string
+          id: string
+          lead_id: string
+          organization_id: string
+        }
+        Insert: {
+          activity_type?: string
+          actor_id?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          lead_id: string
+          organization_id?: string
+        }
+        Update: {
+          activity_type?: string
+          actor_id?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          lead_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_activities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_sources: {
+        Row: {
+          created_at: string
+          id: string
+          is_system: boolean
+          name: string
+          organization_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_system?: boolean
+          name: string
+          organization_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_system?: boolean
+          name?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_sources_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          company_name: string | null
+          contact_email: string | null
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          estimated_capacity_kwp: number | null
+          estimated_value: number | null
+          expected_close_date: string | null
+          id: string
+          lead_number: string
+          lost_reason: string | null
+          next_action: string | null
+          next_action_date: string | null
+          notes: string | null
+          organization_id: string
+          owner_id: string | null
+          priority: string
+          project_type: string
+          site_id: string | null
+          source_id: string | null
+          stage: string
+          updated_at: string
+        }
+        Insert: {
+          company_name?: string | null
+          contact_email?: string | null
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          estimated_capacity_kwp?: number | null
+          estimated_value?: number | null
+          expected_close_date?: string | null
+          id?: string
+          lead_number?: string
+          lost_reason?: string | null
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          organization_id?: string
+          owner_id?: string | null
+          priority?: string
+          project_type?: string
+          site_id?: string | null
+          source_id?: string | null
+          stage?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string | null
+          contact_email?: string | null
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          estimated_capacity_kwp?: number | null
+          estimated_value?: number | null
+          expected_close_date?: string | null
+          id?: string
+          lead_number?: string
+          lost_reason?: string | null
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          organization_id?: string
+          owner_id?: string | null
+          priority?: string
+          project_type?: string
+          site_id?: string | null
+          source_id?: string | null
+          stage?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "customer_sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "lead_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       numbering_sequences: {
         Row: {
           entity_type: string
@@ -425,6 +783,7 @@ export type Database = {
         Args: { p_full_name: string; p_org_name: string; p_org_slug: string }
         Returns: string
       }
+      convert_lead_to_customer: { Args: { p_lead_id: string }; Returns: string }
       create_invite: {
         Args: { p_email?: string; p_role_key: string }
         Returns: {
@@ -454,6 +813,10 @@ export type Database = {
       next_number: {
         Args: { p_entity_type: string; p_format?: string }
         Returns: string
+      }
+      seed_default_lead_sources: {
+        Args: { p_org_id: string }
+        Returns: undefined
       }
       seed_default_roles: { Args: { p_org_id: string }; Returns: undefined }
     }

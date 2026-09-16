@@ -2,8 +2,8 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PHASES = [
-  { name: "Foundation", detail: "Auth, org & roles, design system, navigation, audit log", status: "in_progress" },
-  { name: "Core Sales", detail: "Leads, customers, activities, site scheduling", status: "pending" },
+  { name: "Foundation", detail: "Auth, org & roles, design system, navigation, audit log", status: "done" },
+  { name: "Core Sales", detail: "Leads, customers, activities, site scheduling", status: "in_progress" },
   { name: "Survey + Engineering", detail: "Site surveys, EB bills, capacity calculations, BOM", status: "pending" },
   { name: "Proposal + Project", detail: "Proposal engine, versioning, project passport", status: "pending" },
   { name: "Procurement + Inventory", detail: "Vendors, RFQs, POs, GRN, inventory", status: "pending" },
@@ -22,18 +22,21 @@ export function PhaseRoadmap() {
           <span
             className={cn(
               "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-medium",
-              phase.status === "in_progress"
-                ? "border-info bg-info/10 text-info"
-                : "border-border text-muted-foreground",
+              phase.status === "done" && "border-success bg-success/10 text-success",
+              phase.status === "in_progress" && "border-info bg-info/10 text-info",
+              phase.status === "pending" && "border-border text-muted-foreground",
             )}
           >
-            {phase.status === "in_progress" ? <Check className="h-3 w-3" /> : i + 1}
+            {phase.status === "done" ? <Check className="h-3 w-3" /> : i + 1}
           </span>
           <div className="min-w-0">
             <p className="text-sm font-medium text-foreground">
               {phase.name}
               {phase.status === "in_progress" && (
                 <span className="ml-2 text-xs font-normal text-info">In progress</span>
+              )}
+              {phase.status === "done" && (
+                <span className="ml-2 text-xs font-normal text-success">Done</span>
               )}
             </p>
             <p className="truncate text-xs text-muted-foreground">{phase.detail}</p>

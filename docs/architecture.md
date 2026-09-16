@@ -1,6 +1,6 @@
 # Architecture
 
-Solar Business OS — Phases 1-4 complete (Foundation, Core Sales, Survey + Engineering, Proposal + Project).
+Solar Business OS — Phases 1-4 complete (Foundation, Core Sales, Survey + Engineering, Proposal + Project). Phase 5 (Procurement + Inventory) in progress — Vendors + RFQs built, POs/GRN/Inventory not yet.
 
 ## Stack
 
@@ -32,9 +32,9 @@ All three are `SECURITY DEFINER` (to read `profiles`/`roles` without recursive R
 
 ## What's built vs. scaffolded
 
-Built end-to-end (real data, real RLS, real auth): organization bootstrap, invites, team directory, role overview, organization profile settings, numbering-format settings, audit log, **Leads & CRM**, **Customers**, **Site Surveys**, **EB Bill Intelligence**, **Engineering (capacity + BOM)**, **Proposals**, **Projects**.
+Built end-to-end (real data, real RLS, real auth): organization bootstrap, invites, team directory, role overview, organization profile settings, numbering-format settings, audit log, **Leads & CRM**, **Customers**, **Site Surveys**, **EB Bill Intelligence**, **Engineering (capacity + BOM)**, **Proposals**, **Projects**, **Vendors**, **RFQs** (create from BOM → send → record vendor quotes → compare → award).
 
-Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake data): Procurement, Inventory, Installation execution, QA/QC, Finance, Monitoring, O&M, Customer Portal, Documents, Communications, Reports, Vendors.
+Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake data): Purchase Orders, GRN, Inventory, Installation execution, QA/QC, Finance, Monitoring, O&M, Customer Portal, Documents, Communications, Reports.
 
 ## Leads & Customers (Phase 2)
 
@@ -62,6 +62,14 @@ Scaffolded (routed, but showing an honest "coming in Phase N" state, not fake da
 - **Project health is computed, not stored**: `src/lib/projects/health.ts` (unit-tested, `health.test.ts`) derives `healthy | at_risk | delayed | blocked` from real signals only — open high-impact risks (blocking), an elapsed target COD on a non-terminal project (delayed), overdue tasks or an imminent COD while still in an early status (at risk). Every result includes a `reasons: string[]` so a health badge is never just a color with no explanation, per the spec's "No Surprise" rule.
 - **Timeline vs. Audit Log**: `project_events` is a project-scoped narrative ("Project created from accepted proposal…", "Status changed to Installation") shown on the Timeline tab, distinct from `audit_logs` (system-level before/after record) shown on the Audit tab — same distinction already established between `lead_activities` and `audit_logs` in Phase 2.
 - **Tasks**: a Kanban board only (list/calendar views aren't built) — `project_tasks` has `owner_id` and `created_by` as two separate FKs to `profiles`, so embedded queries need `profiles!project_tasks_owner_id_fkey` to disambiguate which relationship PostgREST should follow.
+
+## Procurement (Phase 5, in progress)
+
+- **RFQs snapshot the BOM, not link-and-hope**: `create_rfq()` copies a project's current BOM items into `rfq_items` at creation time rather than reading `bom_items` live at render time — the same "reused, not re-entered" principle as Phase 4's proposals, but inverted: here the snapshot exists specifically so a later BOM revision *can't* retroactively change what a vendor already quoted against. `bom_item_id` is kept purely for traceability (`on delete set null`).
+- **No vendor portal yet, so quotes are honest manual entry**: `submit_vendor_quote()` is called by an internal user recording what a vendor quoted over phone/email/PDF — same pattern as `eb_bills`' manual consumption entry in Phase 3. No fabricated "AI-extracted" confidence score.
+- **A quote total is a view, not a column**: Postgres generated columns can't aggregate across child rows, so instead of a stored total that could drift out of sync with its line items, `rfq_vendor_quote_totals` is a `security_invoker` view that sums `quoted_amount` fresh on every read.
+- **Award freezes the record structurally**: once `award_rfq()` runs, RLS on `rfq_vendor_quotes`/`rfq_vendor_quote_items` blocks further direct edits (status-conditional, same mechanism as `proposal_versions` in Phase 4) — a decision, once made, can't be silently rewritten from the client.
+- **Purchase orders and GRN are the next slice** of this phase, not built yet — the Procurement nav page and a project's Procurement tab currently show RFQs only.
 
 ## Phased build plan
 

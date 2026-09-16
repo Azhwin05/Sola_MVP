@@ -1499,6 +1499,345 @@ export type Database = {
           },
         ]
       }
+      rfq_items: {
+        Row: {
+          bom_item_id: string | null
+          category: string | null
+          created_at: string
+          id: string
+          item: string
+          organization_id: string
+          quantity: number
+          rfq_id: string
+          sort_order: number
+          specification: string | null
+          unit: string
+        }
+        Insert: {
+          bom_item_id?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          item: string
+          organization_id?: string
+          quantity: number
+          rfq_id: string
+          sort_order?: number
+          specification?: string | null
+          unit: string
+        }
+        Update: {
+          bom_item_id?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          item?: string
+          organization_id?: string
+          quantity?: number
+          rfq_id?: string
+          sort_order?: number
+          specification?: string | null
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_items_bom_item_id_fkey"
+            columns: ["bom_item_id"]
+            isOneToOne: false
+            referencedRelation: "bom_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_items_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfq_vendor_quote_items: {
+        Row: {
+          id: string
+          organization_id: string
+          quantity: number
+          quote_id: string
+          quoted_amount: number | null
+          quoted_rate: number
+          rfq_item_id: string
+        }
+        Insert: {
+          id?: string
+          organization_id?: string
+          quantity: number
+          quote_id: string
+          quoted_amount?: number | null
+          quoted_rate?: number
+          rfq_item_id: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          quantity?: number
+          quote_id?: string
+          quoted_amount?: number | null
+          quoted_rate?: number
+          rfq_item_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_vendor_quote_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_vendor_quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "rfq_vendor_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_vendor_quote_items_rfq_item_id_fkey"
+            columns: ["rfq_item_id"]
+            isOneToOne: false
+            referencedRelation: "rfq_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfq_vendor_quotes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          delivery_lead_days: number | null
+          id: string
+          notes: string | null
+          organization_id: string
+          payment_terms: string | null
+          rfq_id: string
+          status: string
+          submitted_at: string
+          updated_at: string
+          valid_until: string | null
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          delivery_lead_days?: number | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          payment_terms?: string | null
+          rfq_id: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          valid_until?: string | null
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          delivery_lead_days?: number | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          payment_terms?: string | null
+          rfq_id?: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          valid_until?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_vendor_quotes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_vendor_quotes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_vendor_quotes_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_vendor_quotes_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfq_vendors: {
+        Row: {
+          id: string
+          organization_id: string
+          responded_at: string | null
+          rfq_id: string
+          sent_at: string | null
+          status: string
+          vendor_id: string
+        }
+        Insert: {
+          id?: string
+          organization_id?: string
+          responded_at?: string | null
+          rfq_id: string
+          sent_at?: string | null
+          status?: string
+          vendor_id: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          responded_at?: string | null
+          rfq_id?: string
+          sent_at?: string | null
+          status?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_vendors_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_vendors_rfq_id_fkey"
+            columns: ["rfq_id"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfq_vendors_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfqs: {
+        Row: {
+          awarded_quote_id: string | null
+          awarded_vendor_id: string | null
+          bom_header_id: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          project_id: string | null
+          rfq_number: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          awarded_quote_id?: string | null
+          awarded_vendor_id?: string | null
+          bom_header_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          project_id?: string | null
+          rfq_number?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          awarded_quote_id?: string | null
+          awarded_vendor_id?: string | null
+          bom_header_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          project_id?: string | null
+          rfq_number?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfqs_awarded_quote_id_fkey"
+            columns: ["awarded_quote_id"]
+            isOneToOne: false
+            referencedRelation: "rfq_vendor_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_awarded_vendor_id_fkey"
+            columns: ["awarded_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_bom_header_id_fkey"
+            columns: ["bom_header_id"]
+            isOneToOne: false
+            referencedRelation: "bom_headers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rfqs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           permission_id: string
@@ -1934,9 +2273,137 @@ export type Database = {
           },
         ]
       }
+      vendor_contacts: {
+        Row: {
+          created_at: string
+          designation: string | null
+          email: string | null
+          id: string
+          is_primary: boolean
+          name: string
+          organization_id: string
+          phone: string | null
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          designation?: string | null
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name: string
+          organization_id?: string
+          phone?: string | null
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          designation?: string | null
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name?: string
+          organization_id?: string
+          phone?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_contacts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_contacts_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          billing_address: Json
+          category: string
+          created_at: string
+          created_by: string | null
+          gstin: string | null
+          id: string
+          name: string
+          notes: string | null
+          organization_id: string
+          payment_terms: string | null
+          status: string
+          updated_at: string
+          vendor_number: string
+        }
+        Insert: {
+          billing_address?: Json
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          gstin?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          organization_id?: string
+          payment_terms?: string | null
+          status?: string
+          updated_at?: string
+          vendor_number?: string
+        }
+        Update: {
+          billing_address?: Json
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          gstin?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          organization_id?: string
+          payment_terms?: string | null
+          status?: string
+          updated_at?: string
+          vendor_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendors_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      rfq_vendor_quote_totals: {
+        Row: {
+          quote_id: string | null
+          total_amount: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_vendor_quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "rfq_vendor_quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       accept_invite: {
@@ -2012,9 +2479,59 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      award_rfq: {
+        Args: { p_quote_id: string; p_rfq_id: string }
+        Returns: {
+          awarded_quote_id: string | null
+          awarded_vendor_id: string | null
+          bom_header_id: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          project_id: string | null
+          rfq_number: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "rfqs"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       bootstrap_organization: {
         Args: { p_full_name: string; p_org_name: string; p_org_slug: string }
         Returns: string
+      }
+      cancel_rfq: {
+        Args: { p_reason: string | null; p_rfq_id: string }
+        Returns: {
+          awarded_quote_id: string | null
+          awarded_vendor_id: string | null
+          bom_header_id: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          project_id: string | null
+          rfq_number: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "rfqs"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       convert_lead_to_customer: { Args: { p_lead_id: string }; Returns: string }
       create_bom_from_revision: {
@@ -2170,6 +2687,38 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      create_rfq: {
+        Args: {
+          p_bom_header_id: string | null
+          p_due_date: string | null
+          p_notes: string | null
+          p_project_id: string | null
+          p_title: string
+          p_vendor_ids: string[]
+        }
+        Returns: {
+          awarded_quote_id: string | null
+          awarded_vendor_id: string | null
+          bom_header_id: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          project_id: string | null
+          rfq_number: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "rfqs"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_org_id: { Args: never; Returns: string }
       get_invite_preview: {
         Args: { p_token: string }
@@ -2298,6 +2847,63 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "proposal_versions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      send_rfq: {
+        Args: { p_rfq_id: string }
+        Returns: {
+          awarded_quote_id: string | null
+          awarded_vendor_id: string | null
+          bom_header_id: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          project_id: string | null
+          rfq_number: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "rfqs"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      submit_vendor_quote: {
+        Args: {
+          p_delivery_lead_days: number | null
+          p_items: Json
+          p_notes: string | null
+          p_payment_terms: string | null
+          p_rfq_id: string
+          p_valid_until: string | null
+          p_vendor_id: string
+        }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          delivery_lead_days: number | null
+          id: string
+          notes: string | null
+          organization_id: string
+          payment_terms: string | null
+          rfq_id: string
+          status: string
+          submitted_at: string
+          updated_at: string
+          valid_until: string | null
+          vendor_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "rfq_vendor_quotes"
           isOneToOne: true
           isSetofReturn: false
         }

@@ -53,6 +53,24 @@ Schema is managed entirely through Supabase migrations (applied via the Supabase
 | `project_risks` | Open/mitigated/closed risks with impact/probability — open high-impact risks drive a project's health to `blocked`. |
 | `project_events` | Project-scoped narrative timeline ("Status changed to Installation", "Project created from accepted proposal…") — distinct from `audit_logs`, same distinction as `lead_activities` vs `audit_logs` in Phase 2. |
 
+## Tables (Phase 5, in progress — Vendors + RFQs only; POs/GRN/Inventory not yet built)
+
+| Table | Purpose |
+|---|---|
+| `vendors` / `vendor_contacts` | Vendor directory, same shape as `customers`/`customer_contacts`. `vendor_number` via `next_number('vendor')`. |
+| `rfqs` | Request-for-quote header, `rfq_number` via `next_number('rfq')`. Optionally linked to a `projects` row and a source `bom_headers` row. `status` workflow: `draft → sent → quotes_received → awarded \| cancelled`. |
+| `rfq_items` | A **snapshot** of the source BOM's items at RFQ-creation time (`bom_item_id` kept only for traceability, `on delete set null`) — so a later BOM edit can't retroactively change what a vendor already quoted against. |
+| `rfq_vendors` | Which vendors were invited to a given RFQ and their response status (`invited/quoted/declined`). |
+| `rfq_vendor_quotes` | One quote per vendor per RFQ (manual entry by an internal user — no vendor portal yet, same "honest manual entry" pattern as `eb_bills`). Status-conditional RLS mirrors `proposal_versions`: only editable while the parent RFQ is `sent`/`quotes_received`. |
+| `rfq_vendor_quote_items` | Per-item quoted rate; `quoted_amount` is a Postgres generated column (`quantity * quoted_rate`). |
+
+A quote's total can't be a generated column (Postgres generated columns can't aggregate child rows), so `rfq_vendor_quote_totals` is a `security_invoker` **view** that sums `quoted_amount` fresh on every read — same "never let a displayed number drift from its source" rule as the generated columns elsewhere, just applied via a view instead.
+
+- `create_rfq(title, project_id, bom_header_id, due_date, notes, vendor_ids[])` — creates the RFQ, snapshots the BOM's items into `rfq_items`, and invites the given vendors, all in one transaction.
+- `send_rfq(rfq_id)` / `cancel_rfq(rfq_id, reason)` — status transitions.
+- `submit_vendor_quote(rfq_id, vendor_id, ...)` — upserts a vendor's quote and its line items (manual entry).
+- `award_rfq(rfq_id, quote_id)` — marks one quote `selected`, the rest `rejected` for that RFQ, freezes it as `awarded`, and logs a `project_events` entry when the RFQ is linked to a project.
+
 ## Storage
 
 One private bucket, `project-files` (created via `insert into storage.buckets`, since no dedicated MCP tool provisions buckets — see migration `0016`). Path convention: `{organization_id}/...`. RLS on `storage.objects` mirrors the table-level pattern: `(storage.foldername(name))[1] = current_org_id()` plus a `has_permission()` check, so a photo/document is exactly as protected as the row that references it.

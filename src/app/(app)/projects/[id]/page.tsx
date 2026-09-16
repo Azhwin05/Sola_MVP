@@ -9,6 +9,7 @@ import { ProjectTimelineTab } from "@/components/projects/project-timeline-tab";
 import { ProjectTasksTab } from "@/components/projects/project-tasks-tab";
 import { ProjectSiteTab } from "@/components/projects/project-site-tab";
 import { ProjectEngineeringTab } from "@/components/projects/project-engineering-tab";
+import { ProjectProcurementTab } from "@/components/projects/project-procurement-tab";
 import { ProjectAuditTab } from "@/components/projects/project-audit-tab";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -96,7 +97,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </TabsContent>
 
         <TabsContent value="procurement" className="pt-6">
-          <InlineComingSoon label="Procurement" phase="Phase 5" />
+          <ProjectProcurementTab projectId={project.id} canManage={canManage} />
         </TabsContent>
         <TabsContent value="inventory" className="pt-6">
           <InlineComingSoon label="Inventory" phase="Phase 5" />

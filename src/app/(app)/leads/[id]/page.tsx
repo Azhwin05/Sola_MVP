@@ -10,6 +10,7 @@ import { LeadSiteTab } from "@/components/leads/lead-site-tab";
 import { LeadNotesTab } from "@/components/leads/lead-notes-tab";
 import { LeadSurveyTab } from "@/components/leads/lead-survey-tab";
 import { LeadEngineeringTab } from "@/components/leads/lead-engineering-tab";
+import { LeadProposalTab } from "@/components/leads/lead-proposal-tab";
 
 export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,7 +28,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     .maybeSingle();
   if (!lead) notFound();
 
-  const [{ data: activities }, { data: sources }, { data: profiles }, { data: customers }, { data: sites }] = await Promise.all([
+  const [{ data: activities }, { data: sources }, { data: profiles }, { data: customers }, { data: sites }, { data: study }] = await Promise.all([
     supabase.from("lead_activities").select("*, actor:profiles(full_name)").eq("lead_id", id).order("created_at", { ascending: false }),
     supabase.from("lead_sources").select("id, name").order("name"),
     supabase.from("profiles").select("id, full_name").order("full_name"),
@@ -35,6 +36,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     lead.customer_id
       ? supabase.from("customer_sites").select("id, label").eq("customer_id", lead.customer_id).order("created_at")
       : Promise.resolve({ data: [] }),
+    supabase.from("engineering_studies").select("id").eq("lead_id", id).maybeSingle(),
   ]);
 
   return (
@@ -82,7 +84,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
           <InlineComingSoon label="Communication timeline" phase="Phase 8" />
         </TabsContent>
         <TabsContent value="proposal" className="pt-6">
-          <InlineComingSoon label="Proposals" phase="Phase 4" />
+          <LeadProposalTab leadId={lead.id} hasStudy={!!study} />
         </TabsContent>
         <TabsContent value="documents" className="pt-6">
           <InlineComingSoon label="Documents" phase="Phase 8" />

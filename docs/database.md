@@ -42,6 +42,17 @@ Schema is managed entirely through Supabase migrations (applied via the Supabase
 | `engineering_revisions` | Versioned capacity calculations: `inputs`/`outputs` jsonb, `revision_number` assigned server-side (never client-computed) to avoid a race between concurrent recalculations. |
 | `bom_headers` / `bom_items` | Versioned bill of materials generated from a specific `engineering_revisions` row. `bom_items.final_quantity` and `.estimated_amount` are Postgres **generated columns** (`quantity * (1 + wastage%) * rate`), not values the app computes and could drift from. |
 
+## Tables (Phase 4)
+
+| Table | Purpose |
+|---|---|
+| `proposal_versions` | Versioned proposal per lead (`unique(lead_id, version)`), linked to a specific `engineering_revisions`/`bom_headers` pair rather than duplicating equipment line items. `subtotal`/`tax_amount`/`total_amount` are Postgres generated columns. Direct `UPDATE`/`DELETE` only allowed while `status = 'draft'` — see RLS note below. |
+| `projects` | The Project Passport. One row per project, `project_number` via `next_number('project')`, `status` workflow, `capacity_kwp`/`contract_value` carried over from the accepted proposal (or entered manually). |
+| `project_milestones` | The 11 standard installation milestones, seeded automatically by `accept_proposal()` or `create_project()` via the shared `seed_default_project_milestones()` helper. |
+| `project_tasks` | Task board items — `owner_id` and `created_by` are separate FKs to `profiles`, so embeds need `profiles!project_tasks_owner_id_fkey` to disambiguate. |
+| `project_risks` | Open/mitigated/closed risks with impact/probability — open high-impact risks drive a project's health to `blocked`. |
+| `project_events` | Project-scoped narrative timeline ("Status changed to Installation", "Project created from accepted proposal…") — distinct from `audit_logs`, same distinction as `lead_activities` vs `audit_logs` in Phase 2. |
+
 ## Storage
 
 One private bucket, `project-files` (created via `insert into storage.buckets`, since no dedicated MCP tool provisions buckets — see migration `0016`). Path convention: `{organization_id}/...`. RLS on `storage.objects` mirrors the table-level pattern: `(storage.foldername(name))[1] = current_org_id()` plus a `has_permission()` check, so a photo/document is exactly as protected as the row that references it.
@@ -55,12 +66,18 @@ One private bucket, `project-files` (created via `insert into storage.buckets`, 
 - `get_or_create_engineering_study(lead_id)` — idempotent: returns the existing study for a lead or creates one.
 - `create_engineering_revision(study_id, inputs, outputs)` — appends a new revision with a server-assigned `revision_number`.
 - `create_bom_from_revision(revision_id, items)` — creates a new `bom_headers` (server-assigned `version`) plus all its `bom_items` in one call.
+- `create_proposal_version(lead_id, ...)` — creates a new draft version; `proposal_number` reused across a lead's versions, `version` assigned server-side.
+- `send_proposal(version_id)` / `reject_proposal(version_id, reason)` / `archive_proposal(version_id)` — status transitions; only these RPCs (not direct client `UPDATE`) can move a proposal out of `draft`.
+- `accept_proposal(version_id)` — idempotent: creates the `projects` row + 11 milestones + a `project_events` entry + bumps the lead to `won`, or returns the existing project if one's already there.
+- `create_project(customer_id, ...)` — manual project creation (outside the proposal-accepted path), seeding the same 11 milestones via the shared `seed_default_project_milestones()` helper.
 - `next_number(entity_type, format?)` — generates `PROP-2026-0001`-style numbers per the org's configured format.
 - `current_org_id()`, `has_permission(key)`, `is_org_owner()` — RLS helper functions, called from both policies and the client.
 
 ## Multi-tenancy & RLS
 
 RLS is enabled on every table above, and on `storage.objects` for the `project-files` bucket. Every policy scopes rows to `organization_id = current_org_id()`; management operations additionally require `is_org_owner()` or a specific `has_permission()` check. `anon` has no access to any table, any RPC except `get_invite_preview` (needed so an unauthenticated invitee can preview an invite before signing up), or any storage object.
+
+`proposal_versions` is the one table with status-conditional RLS: `proposal_versions_update_draft`/`_delete_draft` only permit direct writes while `status = 'draft'`. Once sent/accepted/rejected/archived, a version is immutable from the client — only `send_proposal()`/`accept_proposal()`/`reject_proposal()`/`archive_proposal()` (`SECURITY DEFINER`, and none of them touch the commercial fields) can change its status. This is the "never overwrite a historical version" product rule enforced structurally, not just by UI convention.
 
 ## Regenerating TypeScript types
 

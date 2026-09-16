@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 const PHASES = [
   { name: "Foundation", detail: "Auth, org & roles, design system, navigation, audit log", status: "done" },
   { name: "Core Sales", detail: "Leads, customers, activities, site scheduling", status: "done" },
-  { name: "Survey + Engineering", detail: "Site surveys, EB bills, capacity calculations, BOM", status: "in_progress" },
-  { name: "Proposal + Project", detail: "Proposal engine, versioning, project passport", status: "pending" },
+  { name: "Survey + Engineering", detail: "Site surveys, EB bills, capacity calculations, BOM", status: "done" },
+  { name: "Proposal + Project", detail: "Proposal engine, versioning, project passport", status: "in_progress" },
   { name: "Procurement + Inventory", detail: "Vendors, RFQs, POs, GRN, inventory", status: "pending" },
   { name: "Execution", detail: "Installation, field updates, QA, commissioning", status: "pending" },
   { name: "Finance", detail: "Invoices, payments, project profitability", status: "pending" },

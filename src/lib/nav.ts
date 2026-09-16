@@ -66,7 +66,7 @@ export const CREATE_MENU_ITEMS: { label: string; href: string; permission: strin
   { label: "New Customer", href: "/customers/new", permission: "customers.manage" },
   { label: "New Site Survey", href: "/surveys/new", permission: "surveys.manage" },
   { label: "New Proposal", href: "/proposals", permission: "proposals.manage" },
-  { label: "New Project", href: "/projects", permission: "projects.manage" },
+  { label: "New Project", href: "/projects/new", permission: "projects.manage" },
   { label: "New Purchase Order", href: "/procurement", permission: "procurement.manage" },
   { label: "New Invoice", href: "/finance", permission: "finance.manage" },
   { label: "New Service Ticket", href: "/om", permission: "om.manage" },

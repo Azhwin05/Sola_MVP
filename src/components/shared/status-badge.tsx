@@ -13,10 +13,43 @@ const TONE_CLASSES: Record<StatusTone, string> = {
 /** Maps common workflow status strings to a semantic tone per the design system's color rules. */
 export function toneForStatus(status: string): StatusTone {
   const s = status.toLowerCase();
-  if (["healthy", "on_track", "on track", "approved", "paid", "completed", "won", "resolved", "closed", "verified", "active"].includes(s)) {
+  if (
+    [
+      "healthy",
+      "on_track",
+      "on track",
+      "approved",
+      "paid",
+      "completed",
+      "won",
+      "resolved",
+      "closed",
+      "verified",
+      "active",
+      "operational",
+      "mitigated",
+      "accepted",
+      "done",
+    ].includes(s)
+  ) {
     return "success";
   }
-  if (["at_risk", "at risk", "pending", "warning", "partially_paid", "in_progress", "in progress", "waiting", "assigned"].includes(s)) {
+  if (
+    [
+      "at_risk",
+      "at risk",
+      "pending",
+      "warning",
+      "partially_paid",
+      "in_progress",
+      "in progress",
+      "waiting",
+      "assigned",
+      "on_hold",
+      "open",
+      "scheduled",
+    ].includes(s)
+  ) {
     return "warning";
   }
   if (["blocked", "delayed", "overdue", "failed", "rejected", "cancelled", "critical", "lost"].includes(s)) {
@@ -34,6 +67,12 @@ export function toneForStatus(status: string): StatusTone {
       "installation",
       "commissioning",
       "contacted",
+      "procurement",
+      "material_ready",
+      "handover",
+      "qa",
+      "reviewed",
+      "submitted",
     ].includes(s)
   ) {
     return "info";

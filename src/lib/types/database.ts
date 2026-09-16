@@ -971,6 +971,534 @@ export type Database = {
           },
         ]
       }
+      project_events: {
+        Row: {
+          actor_id: string | null
+          comment: string | null
+          created_at: string
+          event: string
+          id: string
+          organization_id: string
+          project_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          comment?: string | null
+          created_at?: string
+          event: string
+          id?: string
+          organization_id?: string
+          project_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          comment?: string | null
+          created_at?: string
+          event?: string
+          id?: string
+          organization_id?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_events_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_milestones: {
+        Row: {
+          actual_end: string | null
+          actual_start: string | null
+          created_at: string
+          id: string
+          name: string
+          organization_id: string
+          owner_id: string | null
+          planned_end: string | null
+          planned_start: string | null
+          project_id: string
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          actual_end?: string | null
+          actual_start?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          organization_id?: string
+          owner_id?: string | null
+          planned_end?: string | null
+          planned_start?: string | null
+          project_id: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          actual_end?: string | null
+          actual_start?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          organization_id?: string
+          owner_id?: string | null
+          planned_end?: string | null
+          planned_start?: string | null
+          project_id?: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_milestones_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_milestones_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_milestones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_risks: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          id: string
+          impact: string
+          mitigation: string | null
+          organization_id: string
+          owner_id: string | null
+          probability: string
+          project_id: string
+          risk: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          impact?: string
+          mitigation?: string | null
+          organization_id?: string
+          owner_id?: string | null
+          probability?: string
+          project_id: string
+          risk: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          id?: string
+          impact?: string
+          mitigation?: string | null
+          organization_id?: string
+          owner_id?: string | null
+          probability?: string
+          project_id?: string
+          risk?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_risks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_risks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_risks_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_risks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_tasks: {
+        Row: {
+          checklist: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          organization_id: string
+          owner_id: string | null
+          priority: string
+          project_id: string
+          status: string
+          team: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          checklist?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          organization_id?: string
+          owner_id?: string | null
+          priority?: string
+          project_id: string
+          status?: string
+          team?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          checklist?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          organization_id?: string
+          owner_id?: string | null
+          priority?: string
+          project_id?: string
+          status?: string
+          team?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_tasks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_tasks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_tasks_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          capacity_kwp: number | null
+          contract_value: number | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          id: string
+          lead_id: string | null
+          organization_id: string
+          pm_id: string | null
+          project_number: string
+          proposal_version_id: string | null
+          site_id: string | null
+          status: string
+          target_cod: string | null
+          updated_at: string
+        }
+        Insert: {
+          capacity_kwp?: number | null
+          contract_value?: number | null
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          id?: string
+          lead_id?: string | null
+          organization_id?: string
+          pm_id?: string | null
+          project_number?: string
+          proposal_version_id?: string | null
+          site_id?: string | null
+          status?: string
+          target_cod?: string | null
+          updated_at?: string
+        }
+        Update: {
+          capacity_kwp?: number | null
+          contract_value?: number | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          id?: string
+          lead_id?: string | null
+          organization_id?: string
+          pm_id?: string | null
+          project_number?: string
+          proposal_version_id?: string | null
+          site_id?: string | null
+          status?: string
+          target_cod?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_pm_id_fkey"
+            columns: ["pm_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_proposal_version_id_fkey"
+            columns: ["proposal_version_id"]
+            isOneToOne: false
+            referencedRelation: "proposal_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "customer_sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposal_versions: {
+        Row: {
+          accepted_at: string | null
+          assumptions: string | null
+          bom_header_id: string | null
+          change_summary: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          discount: number
+          engineering_revision_id: string | null
+          equipment_cost: number
+          exclusions: string | null
+          id: string
+          installation_cost: number
+          is_interstate: boolean
+          lead_id: string
+          organization_id: string
+          other_cost: number
+          payment_terms: string | null
+          proposal_number: string
+          rejected_at: string | null
+          rejection_reason: string | null
+          scope: string | null
+          sent_at: string | null
+          status: string
+          subtotal: number | null
+          tax_amount: number | null
+          tax_rate_percent: number
+          total_amount: number | null
+          updated_at: string
+          version: number
+          warranty_equipment_years: number | null
+          warranty_workmanship_years: number | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          assumptions?: string | null
+          bom_header_id?: string | null
+          change_summary?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          discount?: number
+          engineering_revision_id?: string | null
+          equipment_cost?: number
+          exclusions?: string | null
+          id?: string
+          installation_cost?: number
+          is_interstate?: boolean
+          lead_id: string
+          organization_id?: string
+          other_cost?: number
+          payment_terms?: string | null
+          proposal_number: string
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          scope?: string | null
+          sent_at?: string | null
+          status?: string
+          subtotal?: number | null
+          tax_amount?: number | null
+          tax_rate_percent?: number
+          total_amount?: number | null
+          updated_at?: string
+          version: number
+          warranty_equipment_years?: number | null
+          warranty_workmanship_years?: number | null
+        }
+        Update: {
+          accepted_at?: string | null
+          assumptions?: string | null
+          bom_header_id?: string | null
+          change_summary?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          discount?: number
+          engineering_revision_id?: string | null
+          equipment_cost?: number
+          exclusions?: string | null
+          id?: string
+          installation_cost?: number
+          is_interstate?: boolean
+          lead_id?: string
+          organization_id?: string
+          other_cost?: number
+          payment_terms?: string | null
+          proposal_number?: string
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          scope?: string | null
+          sent_at?: string | null
+          status?: string
+          subtotal?: number | null
+          tax_amount?: number | null
+          tax_rate_percent?: number
+          total_amount?: number | null
+          updated_at?: string
+          version?: number
+          warranty_equipment_years?: number | null
+          warranty_workmanship_years?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_versions_bom_header_id_fkey"
+            columns: ["bom_header_id"]
+            isOneToOne: false
+            referencedRelation: "bom_headers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposal_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposal_versions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposal_versions_engineering_revision_id_fkey"
+            columns: ["engineering_revision_id"]
+            isOneToOne: false
+            referencedRelation: "engineering_revisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposal_versions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposal_versions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           permission_id: string
@@ -1415,6 +1943,75 @@ export type Database = {
         Args: { p_full_name: string; p_token: string }
         Returns: string
       }
+      accept_proposal: {
+        Args: { p_version_id: string }
+        Returns: {
+          capacity_kwp: number | null
+          contract_value: number | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          id: string
+          lead_id: string | null
+          organization_id: string
+          pm_id: string | null
+          project_number: string
+          proposal_version_id: string | null
+          site_id: string | null
+          status: string
+          target_cod: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "projects"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      archive_proposal: {
+        Args: { p_version_id: string }
+        Returns: {
+          accepted_at: string | null
+          assumptions: string | null
+          bom_header_id: string | null
+          change_summary: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          discount: number
+          engineering_revision_id: string | null
+          equipment_cost: number
+          exclusions: string | null
+          id: string
+          installation_cost: number
+          is_interstate: boolean
+          lead_id: string
+          organization_id: string
+          other_cost: number
+          payment_terms: string | null
+          proposal_number: string
+          rejected_at: string | null
+          rejection_reason: string | null
+          scope: string | null
+          sent_at: string | null
+          status: string
+          subtotal: number | null
+          tax_amount: number | null
+          tax_rate_percent: number
+          total_amount: number | null
+          updated_at: string
+          version: number
+          warranty_equipment_years: number | null
+          warranty_workmanship_years: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "proposal_versions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       bootstrap_organization: {
         Args: { p_full_name: string; p_org_name: string; p_org_slug: string }
         Returns: string
@@ -1479,6 +2076,100 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      create_project: {
+        Args: {
+          p_capacity_kwp: number | null
+          p_contract_value: number | null
+          p_customer_id: string
+          p_lead_id: string | null
+          p_pm_id: string | null
+          p_site_id: string | null
+          p_target_cod: string | null
+        }
+        Returns: {
+          capacity_kwp: number | null
+          contract_value: number | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          id: string
+          lead_id: string | null
+          organization_id: string
+          pm_id: string | null
+          project_number: string
+          proposal_version_id: string | null
+          site_id: string | null
+          status: string
+          target_cod: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "projects"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      create_proposal_version: {
+        Args: {
+          p_assumptions: string | null
+          p_bom_header_id: string | null
+          p_change_summary?: string | null
+          p_discount: number
+          p_engineering_revision_id: string | null
+          p_equipment_cost: number
+          p_exclusions: string | null
+          p_installation_cost: number
+          p_is_interstate: boolean
+          p_lead_id: string
+          p_other_cost: number
+          p_payment_terms: string | null
+          p_scope: string | null
+          p_tax_rate_percent: number
+          p_warranty_equipment_years: number | null
+          p_warranty_workmanship_years: number | null
+        }
+        Returns: {
+          accepted_at: string | null
+          assumptions: string | null
+          bom_header_id: string | null
+          change_summary: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          discount: number
+          engineering_revision_id: string | null
+          equipment_cost: number
+          exclusions: string | null
+          id: string
+          installation_cost: number
+          is_interstate: boolean
+          lead_id: string
+          organization_id: string
+          other_cost: number
+          payment_terms: string | null
+          proposal_number: string
+          rejected_at: string | null
+          rejection_reason: string | null
+          scope: string | null
+          sent_at: string | null
+          status: string
+          subtotal: number | null
+          tax_amount: number | null
+          tax_rate_percent: number
+          total_amount: number | null
+          updated_at: string
+          version: number
+          warranty_equipment_years: number | null
+          warranty_workmanship_years: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "proposal_versions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_org_id: { Args: never; Returns: string }
       get_invite_preview: {
         Args: { p_token: string }
@@ -1512,14 +2203,104 @@ export type Database = {
         Args: { p_entity_type: string; p_format?: string }
         Returns: string
       }
+      reject_proposal: {
+        Args: { p_reason: string; p_version_id: string }
+        Returns: {
+          accepted_at: string | null
+          assumptions: string | null
+          bom_header_id: string | null
+          change_summary: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          discount: number
+          engineering_revision_id: string | null
+          equipment_cost: number
+          exclusions: string | null
+          id: string
+          installation_cost: number
+          is_interstate: boolean
+          lead_id: string
+          organization_id: string
+          other_cost: number
+          payment_terms: string | null
+          proposal_number: string
+          rejected_at: string | null
+          rejection_reason: string | null
+          scope: string | null
+          sent_at: string | null
+          status: string
+          subtotal: number | null
+          tax_amount: number | null
+          tax_rate_percent: number
+          total_amount: number | null
+          updated_at: string
+          version: number
+          warranty_equipment_years: number | null
+          warranty_workmanship_years: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "proposal_versions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       seed_default_lead_sources: {
         Args: { p_org_id: string }
+        Returns: undefined
+      }
+      seed_default_project_milestones: {
+        Args: { p_org_id: string; p_project_id: string }
         Returns: undefined
       }
       seed_default_roles: { Args: { p_org_id: string }; Returns: undefined }
       seed_default_survey_photo_categories: {
         Args: { p_org_id: string }
         Returns: undefined
+      }
+      send_proposal: {
+        Args: { p_version_id: string }
+        Returns: {
+          accepted_at: string | null
+          assumptions: string | null
+          bom_header_id: string | null
+          change_summary: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          discount: number
+          engineering_revision_id: string | null
+          equipment_cost: number
+          exclusions: string | null
+          id: string
+          installation_cost: number
+          is_interstate: boolean
+          lead_id: string
+          organization_id: string
+          other_cost: number
+          payment_terms: string | null
+          proposal_number: string
+          rejected_at: string | null
+          rejection_reason: string | null
+          scope: string | null
+          sent_at: string | null
+          status: string
+          subtotal: number | null
+          tax_amount: number | null
+          tax_rate_percent: number
+          total_amount: number | null
+          updated_at: string
+          version: number
+          warranty_equipment_years: number | null
+          warranty_workmanship_years: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "proposal_versions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
     }
     Enums: {
